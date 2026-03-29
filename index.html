@@ -1,213 +1,105 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Envelope</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
+    <title>Envelope Canvas</title>
     <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        .envelope {
+    position: relative;
+    top:200px;
+    left:200px;
+    /* border:2px solid black; */
+    /* transform: rotate(90deg);
+    transform-origin: center;  changed from "top left" */
+}
+        .msg{
+            width:270px;
+            height:170px;
+            position:absolute;
+            /* display:block; */
+            top:100px;
+            left:65px;
+            background-color:rgb(174, 122, 122);
+            z-index:1;
+            clip-path:inset(100%,0,0,0);
 
-        :root {
-            --bg: #f0ebe3;
-            --envelope-body: #4da6ff;
-            --envelope-flap: #3399ff;
-            --msg-bg: #ae7a7a;
-            --btn-bg: #1a1a2e;
-            --btn-text: #f0ebe3;
-            --btn-hover: #e63946;
-            --shadow: rgba(0,0,0,0.18);
         }
+        #mycanvas{
+            position:relative;
+            z-index:2;
 
-        body {
-            min-height: 100vh;
-            background: var(--bg);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-family: 'DM Sans', sans-serif;
-            padding: 24px 16px;
-            gap: 0;
-        }
-
-        h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(1.4rem, 4vw, 2.2rem);
-            color: var(--btn-bg);
-            letter-spacing: 0.04em;
-            margin-bottom: 8px;
-            text-align: center;
-        }
-
-        p.sub {
-            font-size: clamp(0.78rem, 2.5vw, 0.95rem);
-            color: #7a7a8a;
-            margin-bottom: 32px;
-            letter-spacing: 0.06em;
-            text-align: center;
-        }
-
-        /* Envelope wrapper — scales with viewport */
-        .envelope-wrapper {
-            width: min(400px, 88vw);
-            aspect-ratio: 400 / 400;
-            position: relative;
-            filter: drop-shadow(0 12px 32px var(--shadow));
-            transition: filter 0.3s;
-        }
-
-        .envelope-wrapper:hover {
-            filter: drop-shadow(0 18px 40px rgba(0,0,0,0.26));
-        }
-
-        #mycanvas {
-            width: 100%;
-            height: 100%;
-            display: block;
-            position: relative;
-            z-index: 2;
-        }
-
-        .msg {
-            width: 67.5%;   /* 270/400 */
-            height: 42.5%;  /* 170/400 */
-            position: absolute;
-            top: 25%;
-            left: 16.25%;
-            background: var(--msg-bg);
-            z-index: 1;
-            clip-path: inset(100% 0 0 0);
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(0.85rem, 3vw, 1.1rem);
-            color: #fff;
-            letter-spacing: 0.05em;
-            box-shadow: inset 0 2px 8px rgba(0,0,0,0.12);
-            transition: clip-path 0.05s linear;
-        }
-
-        /* Buttons */
-        .controls {
-            display: flex;
-            gap: 16px;
-            margin-top: 36px;
-        }
-
-        button {
-            font-family: 'DM Sans', sans-serif;
-            font-size: clamp(0.82rem, 2.5vw, 0.95rem);
-            font-weight: 400;
-            letter-spacing: 0.12em;
-            padding: clamp(10px, 2vw, 14px) clamp(28px, 6vw, 44px);
-            border: 2px solid var(--btn-bg);
-            background: var(--btn-bg);
-            color: var(--btn-text);
-            cursor: pointer;
-            border-radius: 2px;
-            transition: background 0.22s, color 0.22s, transform 0.15s;
-            text-transform: uppercase;
-        }
-
-        button:hover {
-            background: var(--btn-hover);
-            border-color: var(--btn-hover);
-            transform: translateY(-2px);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
-
-        /* Responsive tweaks */
-        @media (max-width: 400px) {
-            .controls { gap: 10px; }
         }
     </style>
 </head>
 <body>
 
-    <h1>You've Got Mail</h1>
-    <p class="sub">tap open to reveal the message</p>
+<div class="envelope">
+    <canvas id="mycanvas" width="400" height="400"></canvas>
+    <div class="msg" >
 
-    <div class="envelope-wrapper">
-        <canvas id="mycanvas" width="400" height="400"></canvas>
-        <div class="msg" id="msgDiv">hihihi</div>
+hihihi
     </div>
+</div>
 
-    <div class="controls">
-        <button onclick="openEnvelope()">OPEN</button>
-        <button onclick="closeEnvelope()">CLOSE</button>
-    </div>
+<button onclick="openEnvelope()">OPEN</button>
+<button onclick="closeEnvelope()">CLOSE</button>
 
 <script>
-    const canvas = document.getElementById("mycanvas");
-    const ctx = canvas.getContext("2d");
-    const msgDiv = document.getElementById("msgDiv");
+const canvas = document.getElementById("mycanvas");
+const ctx = canvas.getContext("2d");
 
-    let flapy = 200;
-    let animInterval = null;
+let flapy = 200;
 
-    function draw() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+// draw function
+function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
 
-        // body
-        ctx.fillStyle = "#4da6ff";
-        ctx.fillRect(50, 100, 300, 200);
-        ctx.strokeStyle = "#2a7acc";
-        ctx.lineWidth = 1.5;
-        ctx.strokeRect(50, 100, 300, 200);
+    // body
+    ctx.fillStyle="#4da6ff";
+    ctx.fillRect(50,100,300,200);
+    ctx.strokeRect(50,100,300,200);
 
-        // flap
-        ctx.beginPath();
-        ctx.moveTo(50, 100);
-        ctx.lineTo(200, flapy);
-        ctx.lineTo(350, 100);
-        ctx.closePath();
-        ctx.fillStyle = "#3399ff";
-        ctx.fill();
-        ctx.strokeStyle = "#2a7acc";
-        ctx.stroke();
-    }
+    // flap
+    ctx.beginPath();
+    ctx.moveTo(50,100);
+    ctx.lineTo(200,flapy);
+    ctx.lineTo(350,100);
+    ctx.closePath();
+    ctx.fillStyle="#3399ff";
+    ctx.fill();
+    ctx.stroke();
+}
 
-    function setMsgReveal(ratio) {
-        msgDiv.style.clipPath = `inset(${(1 - ratio) * 100}% 0 0 0)`;
-    }
+// open animation
+function openEnvelope(){
+    let interval = setInterval(()=>{
+        if(flapy > 30){
+            flapy -= 3;
+            draw();
+        } else {
+            clearInterval(interval);
+        }
+    },16);
+}
 
-    function openEnvelope() {
-        if (animInterval) clearInterval(animInterval);
-        animInterval = setInterval(() => {
-            if (flapy > 30) {
-                flapy -= 3;
-                draw();
-                const progress = (200 - flapy) / 170; // 0→1 as flap opens
-                setMsgReveal(Math.max(0, progress - 0.4) / 0.6);
-            } else {
-                setMsgReveal(1);
-                clearInterval(animInterval);
-                animInterval = null;
-            }
-        }, 16);
-    }
+// close animation
+function closeEnvelope(){
+    let interval = setInterval(()=>{
+        if(flapy < 200){
+            flapy += 3;
+            draw();
+        } else {
+            clearInterval(interval);
+        }
+    },16);
+}
+function setMsgReveal(ratio) {
+    msgDiv.style.clipPath = `inset(${(1 - ratio) * 100}% 0 0 0)`;
+}
 
-    function closeEnvelope() {
-        if (animInterval) clearInterval(animInterval);
-        setMsgReveal(0);
-        animInterval = setInterval(() => {
-            if (flapy < 200) {
-                flapy += 3;
-                draw();
-            } else {
-                clearInterval(animInterval);
-                animInterval = null;
-            }
-        }, 16);
-    }
 
-    draw();
+// initial draw
+draw();
 </script>
+
 </body>
 </html>
